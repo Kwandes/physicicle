@@ -50,6 +50,23 @@ function doPhysics() {
   let renderViewWidth = 800;
 
   createBounds(renderViewHeight, renderViewWidth, world);
+
+  Matter.Events.on(mouseConstraint, "mousedown", () => {
+    const angle = Math.floor(Math.random() * Math.floor(15) + 15);
+    Matter.World.add(
+      world,
+      Matter.Bodies.polygon(
+        mouseConstraint.mouse.mousedownPosition.x,
+        mouseConstraint.mouse.mousedownPosition.y,
+        3, // polygon sides
+        50, // radius aka size
+        {
+          angle: angle,
+          mass: 50,
+        }
+      )
+    );
+  });
 }
 
 function createBounds(renderViewHeight, renderViewWidth, world) {
@@ -97,10 +114,13 @@ function getStack(renderViewHeight, renderViewWidth) {
   let stackRectangleHeight = 20;
   let stackRectangleWidth = 20;
 
- // where to spawn the stack. Accounts for the width and height of the bodies in the stack
+  // where to spawn the stack. Accounts for the width and height of the bodies in the stack
   let stackSpawnX =
     renderViewWidth / 2 - (stackWidth * stackRectangleWidth) / 2;
-  let stackSpawnY= renderViewHeight - stackRectangleHeight / 2 - stackHeight * stackRectangleHeight;
+  let stackSpawnY =
+    renderViewHeight -
+    stackRectangleHeight / 2 -
+    stackHeight * stackRectangleHeight;
 
   // add bodies
   var stack = Matter.Composites.stack(
