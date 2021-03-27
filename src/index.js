@@ -16,12 +16,15 @@ var Engine = Matter.Engine,
         element: document.body,
         engine: engine,
         options: {
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: window.innerWidth, // the actual render is RenderViewHeight, this is just the visual space occupied
+            height: window.innerHeight, // the actual render is RenderViewWidth
             showAngleIndicator: true,
             wireframes: false,
         }
     });
+
+    renderViewHeight = 600;
+    renderViewWidth = 800;
 
     Render.run(render);
 
@@ -29,18 +32,32 @@ var Engine = Matter.Engine,
     var runner = Runner.create();
     Runner.run(runner, engine);
 
+    let stackHeight = 15;
+    let stackWidth = 20;
+
+    let stackRectangleHeight = 20;
+    let stackRectangleWidth = 20;
+
+    let stackSpawnX = renderViewWidth / 2 - (stackWidth * stackRectangleWidth)/2;
+
     // add bodies
-    var stack = Composites.stack(200, 606 - 25.25 - 5 * 40, 10, 5, 0, 0, function(x, y) {
-        return Bodies.rectangle(x, y, 40, 40);
+    var stack = Composites.stack(stackSpawnX, renderViewHeight - stackRectangleHeight / 2 - stackHeight * stackRectangleHeight, stackWidth, stackHeight, 0, 0, function(x, y) {
+        return Bodies.rectangle(x, y, stackRectangleWidth, stackRectangleHeight);
     });
-    
+
+    let boundsThiccness = 50;
+    let boundsHeight = renderViewHeight;
+    let boundsWidth = renderViewWidth;
+    let boundsOffsetX = (renderViewWidth/100 * 0.375) * 100; // take up 66% of window width
+    //let boundsOffsetY = 100; // take up 66% of window width
+
     World.add(world, [
         stack,
         // walls
-        Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-        Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-        Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
-        Bodies.rectangle(400, 606, 800, 50.5, { isStatic: true })
+        Bodies.rectangle(renderViewWidth/2, 0, boundsWidth, boundsThiccness, { isStatic: true }), // top bound
+        Bodies.rectangle(renderViewWidth, boundsOffsetX, boundsThiccness, boundsHeight, { isStatic: true }), // right bound
+        Bodies.rectangle(0, boundsOffsetX, boundsThiccness, boundsHeight, { isStatic: true }), // left bound
+        Bodies.rectangle(renderViewWidth/2, renderViewHeight, boundsWidth, boundsThiccness, { isStatic: true }) // bottom bound
     ]);
 
     // add mouse control
