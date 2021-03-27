@@ -1,42 +1,67 @@
-// module aliases
 var Engine = Matter.Engine,
-  Render = Matter.Render,
-  World = Matter.World,
-  Bodies = Matter.Bodies;
+        Render = Matter.Render,
+        Runner = Matter.Runner,
+        Composites = Matter.Composites,
+        MouseConstraint = Matter.MouseConstraint,
+        Mouse = Matter.Mouse,
+        World = Matter.World,
+        Bodies = Matter.Bodies;
 
-// create an engine
-var engine = Engine.create();
+    // create engine
+    var engine = Engine.create(),
+        world = engine.world;
 
-// create a renderer
-var render = Render.create({
-  element: document.body,
-  engine: engine,
-  options: {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  },
-});
+    // create renderer
+    var render = Render.create({
+        element: document.body,
+        engine: engine,
+        options: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+            showAngleIndicator: true,
+            wireframes: false,
+        }
+    });
 
-// create two boxes and a ground
-var boxA = Bodies.rectangle(window.innerWidth / 2, 200, 80, 80);
-var boxB = Bodies.rectangle(window.innerWidth / 2 + 50, 50, 80, 80);
+    Render.run(render);
 
-groundWidth = window.innerWidth / 4;
-var ground = Bodies.rectangle(
-  window.innerWidth / 2,
-  600,
-  groundWidth,
-  60,
-  { isStatic: true }
-);
+    // create runner
+    var runner = Runner.create();
+    Runner.run(runner, engine);
 
-console.log(ground)
+    // add bodies
+    var stack = Composites.stack(200, 606 - 25.25 - 5 * 40, 10, 5, 0, 0, function(x, y) {
+        return Bodies.rectangle(x, y, 40, 40);
+    });
+    
+    World.add(world, [
+        stack,
+        // walls
+        Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
+        Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
+        Bodies.rectangle(0, 300, 50, 600, { isStatic: true }),
+        Bodies.rectangle(400, 606, 800, 50.5, { isStatic: true })
+    ]);
 
-// add all of the bodies to the world
-World.add(engine.world, [boxA, boxB, ground]);
+    // add mouse control
+    var mouse = Mouse.create(render.canvas),
+        mouseConstraint = MouseConstraint.create(engine, {
+            mouse: mouse,
+            constraint: {
+                stiffness: 0.2,
+                render: {
+                    visible: false
+                }
+            }
+        });
 
-// run the engine
-Engine.run(engine);
+    World.add(world, mouseConstraint);
 
-// run the renderer
-Render.run(render);
+    // keep the mouse in sync with rendering
+    render.mouse = mouse;
+
+    // fit the render viewport to the scene
+    Render.lookAt(render, {
+        min: { x: 0, y: 0 },
+        max: { x: 800, y: 600 }
+    });
