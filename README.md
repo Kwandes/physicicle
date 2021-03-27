@@ -14,11 +14,8 @@ I just write as I go
 ### Running the app
 Simply open the index.html in your preferred browser. As long as it's not Internet Explorer it should run properly.
 
-### Live Reloading
-The app is live-reloading-compatible. Use [Budo](https://github.com/mattdesl/budo) to easy run your app while testing.\
-To run the app run this command in the source root directory _(where your index.js is)_\
-`npx budo index.js --live --open`\
-This will automatically run and open the app in your browser.
+## Online view
+This app is also deployed on [Github Pages](https://kwandes.github.io/physicicle/src/index.html) but the functionality related to sounds doesn't work due to the sound files being local
 
 ## License
 This project is released under an [MIT license](LICENSE.md)
