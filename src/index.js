@@ -1,84 +1,124 @@
-var Engine = Matter.Engine,
-    Render = Matter.Render,
-    Runner = Matter.Runner,
-    Composites = Matter.Composites,
-    MouseConstraint = Matter.MouseConstraint,
-    Mouse = Matter.Mouse,
-    World = Matter.World,
-    Bodies = Matter.Bodies;
-
-// create engine
-var engine = Engine.create(),
+// main function that inits the physics engine, the render and runner etc
+// it also has all of the methods related to creation of bodies (like in the stack and the bounds)
+function doPhysics() {
+  // create engine
+  var engine = Matter.Engine.create(),
     world = engine.world;
 
-// create renderer
-var render = Render.create({
+  // create renderer
+  var render = Matter.Render.create({
     element: document.body,
     engine: engine,
     options: {
-        width: window.innerWidth, // the actual render is RenderViewHeight, this is just the visual space occupied
-        height: window.innerHeight, // the actual render is RenderViewWidth
-        showAngleIndicator: true,
-        wireframes: false,
-    }
-});
+      width: window.innerWidth, // the actual render is RenderViewHeight, this is just the visual space occupied
+      height: window.innerHeight, // the actual render is RenderViewWidth
+      showAngleIndicator: true,
+      wireframes: false,
+    },
+  });
 
-renderViewHeight = 600;
-renderViewWidth = 800;
+  Matter.Render.run(render);
 
-Render.run(render);
+  // create runner
+  var runner = Matter.Runner.create();
+  Matter.Runner.run(runner, engine);
 
-// create runner
-var runner = Runner.create();
-Runner.run(runner, engine);
-
-let stackHeight = 15;
-let stackWidth = 20;
-
-let stackRectangleHeight = 20;
-let stackRectangleWidth = 20;
-
-let stackSpawnX = renderViewWidth / 2 - (stackWidth * stackRectangleWidth)/2;
-
-// add bodies
-var stack = Composites.stack(stackSpawnX, renderViewHeight - stackRectangleHeight / 2 - stackHeight * stackRectangleHeight, stackWidth, stackHeight, 0, 0, function(x, y) {
-    return Bodies.rectangle(x, y, stackRectangleWidth, stackRectangleHeight);
-});
-
-let boundsThiccness = 50;
-let boundsHeight = renderViewHeight;
-let boundsWidth = renderViewWidth;
-let boundsOffsetX = (renderViewWidth/100 * 0.375) * 100; // take up 66% of window width
-//let boundsOffsetY = 100; // take up 66% of window width
-
-World.add(world, [
-    stack,
-    // walls
-    Bodies.rectangle(renderViewWidth/2, 0, boundsWidth, boundsThiccness, { isStatic: true }), // top bound
-    Bodies.rectangle(renderViewWidth, boundsOffsetX, boundsThiccness, boundsHeight, { isStatic: true }), // right bound
-    Bodies.rectangle(0, boundsOffsetX, boundsThiccness, boundsHeight, { isStatic: true }), // left bound
-    Bodies.rectangle(renderViewWidth/2, renderViewHeight, boundsWidth, boundsThiccness, { isStatic: true }) // bottom bound
-]);
-
-// add mouse control
-var mouse = Mouse.create(render.canvas),
-    mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-            stiffness: 0.2,
-            render: {
-                visible: false
-            }
-        }
+  // add mouse control
+  var mouse = Matter.Mouse.create(render.canvas),
+    mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false,
+        },
+      },
     });
 
-World.add(world, mouseConstraint);
+  Matter.World.add(world, mouseConstraint);
 
-// keep the mouse in sync with rendering
-render.mouse = mouse;
+  // keep the mouse in sync with rendering
+  render.mouse = mouse;
 
-// fit the render viewport to the scene
-Render.lookAt(render, {
+  // fit the render viewport to the scene
+  Matter.Render.lookAt(render, {
     min: { x: 0, y: 0 },
-    max: { x: 800, y: 600 }
-});
+    max: { x: 800, y: 600 },
+  });
+
+  let renderViewHeight = 600;
+  let renderViewWidth = 800;
+
+  createBounds(renderViewHeight, renderViewWidth, world);
+}
+
+function createBounds(renderViewHeight, renderViewWidth, world) {
+  let boundsThiccness = 50;
+  let boundsHeight = renderViewHeight;
+  let boundsWidth = renderViewWidth;
+  let boundsOffsetX = (renderViewWidth / 100) * 0.375 * 100; // take up 66% of window width
+
+  Matter.World.add(world, [
+    getStack(renderViewHeight, renderViewWidth, world), // 15 high, 20 wide stack of rectangles
+    // bounds to limit where the boxes can fly
+    Matter.Bodies.rectangle(
+      renderViewWidth / 2,
+      0,
+      boundsWidth,
+      boundsThiccness,
+      { isStatic: true }
+    ), // top bound
+    Matter.Bodies.rectangle(
+      renderViewWidth,
+      boundsOffsetX,
+      boundsThiccness,
+      boundsHeight,
+      { isStatic: true }
+    ), // right bound
+    Matter.Bodies.rectangle(0, boundsOffsetX, boundsThiccness, boundsHeight, {
+      isStatic: true,
+    }), // left bound
+    Matter.Bodies.rectangle(
+      renderViewWidth / 2,
+      renderViewHeight,
+      boundsWidth,
+      boundsThiccness,
+      { isStatic: true }
+    ), // bottom bound
+  ]);
+}
+
+function getStack(renderViewHeight, renderViewWidth) {
+  // how many elements the stack contains
+  let stackHeight = 15;
+  let stackWidth = 20;
+
+  // dimensions of individual bodies in the stack
+  let stackRectangleHeight = 20;
+  let stackRectangleWidth = 20;
+
+ // where to spawn the stack. Accounts for the width and height of the bodies in the stack
+  let stackSpawnX =
+    renderViewWidth / 2 - (stackWidth * stackRectangleWidth) / 2;
+  let stackSpawnY= renderViewHeight - stackRectangleHeight / 2 - stackHeight * stackRectangleHeight;
+
+  // add bodies
+  var stack = Matter.Composites.stack(
+    stackSpawnX,
+    stackSpawnY,
+    stackWidth,
+    stackHeight,
+    0,
+    0,
+    function (x, y) {
+      return Matter.Bodies.rectangle(
+        x,
+        y,
+        stackRectangleWidth,
+        stackRectangleHeight
+      );
+    }
+  );
+
+  return stack;
+}
