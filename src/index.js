@@ -16,6 +16,9 @@ function doPhysics() {
       wireframes: false,
     },
   });
+  
+  let renderViewHeight = 1200;
+  let renderViewWidth = 1600;
 
   Matter.Render.run(render);
 
@@ -43,11 +46,8 @@ function doPhysics() {
   // fit the render viewport to the scene
   Matter.Render.lookAt(render, {
     min: { x: 0, y: 0 },
-    max: { x: 800, y: 600 },
+    max: { x: renderViewWidth, y: renderViewHeight },
   });
-
-  let renderViewHeight = 600;
-  let renderViewWidth = 800;
 
   createBounds(renderViewHeight, renderViewWidth, world);
 
@@ -111,8 +111,8 @@ function getStack(renderViewHeight, renderViewWidth) {
   let stackWidth = 20;
 
   // dimensions of individual bodies in the stack
-  let stackRectangleHeight = 20;
-  let stackRectangleWidth = 20;
+  let stackRectangleHeight = 30;
+  let stackRectangleWidth = 30;
 
   // where to spawn the stack. Accounts for the width and height of the bodies in the stack
   let stackSpawnX =
