@@ -15,7 +15,7 @@ I just write as I go
 Simply open the index.html in your preferred browser. As long as it's not Internet Explorer it should run properly.
 
 ## Online view
-This app is also deployed on [Github Pages](https://kwandes.github.io/physicicle/src/index.html) but the functionality related to sounds doesn't work due to the sound files being local
+This app is also deployed on [Github Pages](https://kwandes.github.io/physicicle/src/index.html) and can be viewed there
 
 ## License
 This project is released under an [MIT license](LICENSE.md)
