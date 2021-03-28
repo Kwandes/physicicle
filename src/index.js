@@ -2,11 +2,11 @@
 // it also has all of the methods related to creation of bodies (like in the stack and the bounds)
 function doPhysics() {
   // create engine
-  var engine = Matter.Engine.create(),
+  let engine = Matter.Engine.create(),
     world = engine.world;
 
   // create renderer
-  var render = Matter.Render.create({
+  let render = Matter.Render.create({
     element: document.body,
     engine: engine,
     options: {
@@ -23,11 +23,11 @@ function doPhysics() {
   Matter.Render.run(render);
 
   // create runner
-  var runner = Matter.Runner.create();
+  let runner = Matter.Runner.create();
   Matter.Runner.run(runner, engine);
 
   // add mouse control
-  var mouse = Matter.Mouse.create(render.canvas),
+  let mouse = Matter.Mouse.create(render.canvas),
     mouseConstraint = Matter.MouseConstraint.create(engine, {
       mouse: mouse,
       constraint: {
@@ -124,7 +124,7 @@ function getStack(renderViewHeight, renderViewWidth) {
     stackHeight * stackRectangleHeight;
 
   // add bodies
-  var stack = Matter.Composites.stack(
+  let stack = Matter.Composites.stack(
     stackSpawnX,
     stackSpawnY,
     stackWidth,
