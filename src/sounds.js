@@ -34,11 +34,3 @@ function playClickSound() {
   audio.play();
 }
 
-// ensures that the index 0 only has a 20% chance to play even when it gets rolled
-function isGoodIndex(soundIndex) {
-  if (soundIndex == 0) {
-    let temp = Math.floor(Math.random() * Math.floor(100));
-    return temp > 20;
-  }
-  return false;
-}

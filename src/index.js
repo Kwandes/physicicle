@@ -49,7 +49,7 @@ function doPhysics() {
     max: { x: renderViewWidth, y: renderViewHeight },
   });
 
-  createBounds(renderViewHeight, renderViewWidth, world);
+  createArenaBounds(renderViewHeight, renderViewWidth, world);
 
   Matter.Events.on(mouseConstraint, "mousedown", () => {
     const angle = Math.floor(Math.random() * Math.floor(15) + 15);
@@ -70,7 +70,7 @@ function doPhysics() {
   });
 }
 
-function createBounds(renderViewHeight, renderViewWidth, world) {
+function createArenaBounds(renderViewHeight, renderViewWidth, world) {
   let boundsThiccness = 50;
   let boundsHeight = renderViewHeight;
   let boundsWidth = renderViewWidth;
