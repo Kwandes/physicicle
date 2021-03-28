@@ -2,7 +2,6 @@ const clickSounds = ["click1.mp3", "click2.mp3"];
 
 const cursedSounds = [
   "cursed.mp3",
-  "click.mp3",
   "losing-horn.wav",
   "mc-damage-taken.wav",
   "mc-villager-oof.wav",
